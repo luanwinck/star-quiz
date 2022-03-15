@@ -4,6 +4,10 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+// import { initializeFirebaseApp } from './services'
+
+// initializeFirebaseApp()
+
 ReactDOM.render(
   <React.StrictMode>
     <App />

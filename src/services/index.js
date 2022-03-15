@@ -1,0 +1,1 @@
+export { initializeFirebaseApp, updateUserAnswers } from './firebase/firebase.service'
