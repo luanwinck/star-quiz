@@ -1,0 +1,17 @@
+import { STAR_WARS_LOGO } from '../../../assets/images';
+
+import './initial.css'
+
+export function InitialScreen() {
+  return (
+    <div className="initial">
+      <span className="initial_title">Quiz #1</span>
+
+      <img src={STAR_WARS_LOGO} className="initial_star-wars-logo" />
+
+      <button className="initial_start-button">
+        Iniciar
+      </button>
+    </div>
+  )
+}
