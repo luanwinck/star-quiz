@@ -1,6 +1,8 @@
+import { doc, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
 import { updateUserAnswers } from '../../../services'
+import { db } from '../../../services/firebase/firebase.service'
 
 import './question.css'
 
@@ -13,11 +15,16 @@ const OPTIONS = [
 
 export function QuestionScreen() {
   const [selectedOption, setSelectedOption] = useState()
-  const [questionIndex, setQuestionIndex] = useState(1)
+  const [questionIndex, setQuestionIndex] = useState(0)
 
   useEffect(() => {
-    // Observar quando alterar o currentQuestionIndex no firebase
-    // setQuestionIndex
+    const unsub = onSnapshot(doc(db, "quiz", String(1)), (doc) => {
+        const data = doc.data()
+
+        setQuestionIndex(data.currentQuestionIndex)
+    });
+
+    return unsub
   }, [])
 
   async function handleUpdateAnswerList(answerIndex) {
@@ -29,10 +36,12 @@ export function QuestionScreen() {
       setSelectedOption(answerIndex)
   }
 
+  const questionNumber = questionIndex + 1
+
   return (
     <div className="question">
       <header className="question_header borders">
-        <p>1# Qual meu segundo esporte preferido, de jogar? (sim, copiei do Pedro)</p>
+      <p>{questionNumber}# Qual meu segundo esporte preferido, de jogar?</p>
       </header>
 
       <div className="question_options-container">

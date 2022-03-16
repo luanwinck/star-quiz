@@ -21,7 +21,7 @@ initializeFirebaseApp()
 // ajustar isso daqui
 // criar uma service como classe ou hook?
 
-const db = getFirestore();
+export const db = getFirestore();
 
 const QUIZ_NUMBER = 1 // ???
 

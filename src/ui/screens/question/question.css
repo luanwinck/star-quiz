@@ -50,3 +50,7 @@
 .question_option-button-selected {
   filter: brightness(70%);
 }
+
+.question_option-button-wrong {
+  background-color: #b33333;
+}
