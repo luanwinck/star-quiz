@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, getDocs, onSnapshot, updateDoc, increment } from 'firebase/firestore';
+import { useCallback, useEffect, useState } from "react";
 
 
 const firebaseConfig = {
@@ -12,18 +13,16 @@ const firebaseConfig = {
 };
 
 export const initializeFirebaseApp = () => {
-  console.log('initializeFirebaseApp')
   initializeApp(firebaseConfig);
 }
 
 initializeFirebaseApp()
 
 // ajustar isso daqui
-// criar uma service como classe ou hook?
-
 export const db = getFirestore();
 
-const QUIZ_NUMBER = 1 // ???
+const COLLECTION_NAME = 'quiz'
+const QUIZ_NUMBER = "1" // TODO: tornar dinamico
 
 function getUpdatedAnswers(currentAnswers, newAnswer) {
   const hasAlreadyAnswered = currentAnswers.some((answer) => answer.questionIndex === newAnswer.questionIndex)
@@ -39,16 +38,115 @@ function getUpdatedAnswers(currentAnswers, newAnswer) {
   })
 }
 
-export async function updateUserAnswers(user, newAnswer) {
-  const quizRef = doc(db, "quiz", String(QUIZ_NUMBER), "userAnswers", "bruna");
+export function useQuiz() {
+  const [quizNumber, setQuizNumber] = useState(QUIZ_NUMBER)
+  const [questions, setQuestions] = useState([])
+  const [questionIndex, setQuestionIndex] = useState(0)
 
-  const querySnapshot = await getDoc(quizRef);
+  // async function getQuiz() {
+  //   try {
+  //     const quizRef = doc(db, COLLECTION_NAME, quizNumber);
 
-  const currentAnswers = querySnapshot.data().answers || []
+  //     const querySnapshot = await getDoc(quizRef);
 
-  console.log(currentAnswers)
+  //     const queryData = querySnapshot.data()
 
-  await setDoc(quizRef, {
-    answers: getUpdatedAnswers(currentAnswers, newAnswer)
-  })
+  //     setQuestions(queryData.questions)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   getQuiz()
+  // }, [])
+
+  useEffect(() => {
+    const unsub = onSnapshot(doc(db, COLLECTION_NAME, quizNumber), (doc) => {
+        const data = doc.data()
+
+        setQuestionIndex(data.currentQuestionIndex)
+        setQuestions(data.questions)
+    });
+
+    return unsub
+  }, [])
+
+  const updateUserAnswers = useCallback(async (user, newAnswer) => {
+    const quizRef = doc(db, "quiz", QUIZ_NUMBER, "userAnswers", "bruna");
+  
+    const querySnapshot = await getDoc(quizRef);
+  
+    const currentAnswers = querySnapshot.data().answers || []
+  
+    await setDoc(quizRef, {
+      answers: getUpdatedAnswers(currentAnswers, newAnswer)
+    })
+  }, [])
+
+  const changeCurrentQuestionIndex = useCallback(async (newQuestionIndex) => {
+    try {
+      const quizRef = doc(db, COLLECTION_NAME, quizNumber);
+
+      await updateDoc(quizRef, {
+        currentQuestionIndex: newQuestionIndex
+      });
+    } catch (error) {
+      console.log(error)
+    }
+  }, [])
+
+  const showQuestionResult = useCallback(async () => {
+    try {
+      console.log(questions)
+
+      if (questions.length === 0) return
+
+      const quizRef = doc(db, COLLECTION_NAME, quizNumber);
+
+      await updateDoc(quizRef, {
+        questions: questions.map((question, index) => {
+          if (index === questionIndex) {
+            return {
+              ...question,
+              hasBeenShownResult: true,
+            }
+          }
+
+          return question
+        })
+      });
+    } catch (error) {
+      console.log(error)
+    }
+  }, [questions])
+
+  return {
+    questions,
+    questionIndex,
+    updateUserAnswers,
+    changeCurrentQuestionIndex,
+    showQuestionResult,
+  }
+}
+
+async function createQuestions() {
+  const questions = [
+    {
+      question: 'Qual foi a primeira faculdade que fiz?',
+      answers: ["Eng. Eletrica", "Eng. Eletronica", "Eng. da computação", "Sistemas da Informação"],
+      answerIndex: 1
+    },
+    {
+      question: '- Quantas vezes bati de carro?',
+      answers: ["1", "2", "3", "4"],
+      answerIndex: 2
+    },
+  ]
+
+  const quizRef = doc(db, COLLECTION_NAME, "1");
+
+  await updateDoc(quizRef, {
+    questions
+  });
 }

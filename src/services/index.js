@@ -1,1 +1,1 @@
-export { initializeFirebaseApp, updateUserAnswers } from './firebase/firebase.service'
+export { initializeFirebaseApp, useQuiz } from './firebase/firebase.service'

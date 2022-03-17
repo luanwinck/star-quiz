@@ -1,8 +1,8 @@
 import { doc, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
-import { updateUserAnswers } from '../../../services'
-import { db } from '../../../services/firebase/firebase.service'
+import { useQuiz } from '../../../services'
+import { Button } from '../../components';
 
 import './question.css'
 
@@ -15,17 +15,13 @@ const OPTIONS = [
 
 export function QuestionScreen() {
   const [selectedOption, setSelectedOption] = useState()
-  const [questionIndex, setQuestionIndex] = useState(0)
-
-  useEffect(() => {
-    const unsub = onSnapshot(doc(db, "quiz", String(1)), (doc) => {
-        const data = doc.data()
-
-        setQuestionIndex(data.currentQuestionIndex)
-    });
-
-    return unsub
-  }, [])
+  const {
+    questions,
+    questionIndex,
+    updateUserAnswers,
+    changeCurrentQuestionIndex,
+    showQuestionResult,
+  } = useQuiz()
 
   async function handleUpdateAnswerList(answerIndex) {
       await updateUserAnswers("bruna", {
@@ -37,15 +33,29 @@ export function QuestionScreen() {
   }
 
   const questionNumber = questionIndex + 1
+  const { question, answers, hasBeenShownResult } = questions[questionIndex] || {}
+
+  function handleNextQuestion() {
+    // TODO: validar se chegou na ultima pergunta
+    changeCurrentQuestionIndex(questionIndex + 1)
+  }
+
+  function handlePrevQuestion() {
+    changeCurrentQuestionIndex(questionIndex - 1)
+  }
+
+  function handleShowResult() {
+    showQuestionResult()
+  }
 
   return (
     <div className="question">
       <header className="question_header borders">
-      <p>{questionNumber}# Qual meu segundo esporte preferido, de jogar?</p>
+      <p>{questionNumber}# {question}</p>
       </header>
 
       <div className="question_options-container">
-        {OPTIONS.map((option, index) => (
+        {answers?.map((option, index) => (
           <button
             key={option}
             className={`question_option-button ${selectedOption === index ? 'question_option-button-selected' : ''}`}
@@ -55,6 +65,32 @@ export function QuestionScreen() {
           </button>
         ))}
       </div>
+
+      {hasBeenShownResult && <span>Vai mostrar os botões com certo ou errado!!!</span>}
+
+      <div className="question_action-buttons-container">
+        <Button
+          className="question_action-button"
+          onClick={handlePrevQuestion}
+          disabled={questionIndex === 0}
+        >
+          Anterior
+        </Button>
+        <Button
+          className="question_action-button"
+          onClick={handleShowResult}
+        >
+          Mostrar resultado
+        </Button>
+        <Button
+          className="question_action-button"
+          onClick={handleNextQuestion}
+          disabled={!hasBeenShownResult}
+        >
+          Próxima
+        </Button>
+      </div>
+      
     </div>
   )
 }

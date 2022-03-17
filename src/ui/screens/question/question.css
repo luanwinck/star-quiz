@@ -54,3 +54,7 @@
 .question_option-button-wrong {
   background-color: #b33333;
 }
+
+.question_action-button {
+  margin: auto 12px;
+}
