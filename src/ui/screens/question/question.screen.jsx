@@ -1,17 +1,9 @@
-import { doc, onSnapshot } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useQuiz } from '../../../services'
 import { Button } from '../../components';
 
 import './question.css'
-
-const OPTIONS = [
-  "Volei",
-  "Basquete",
-  "Tenis",
-  "Golf"
-]
 
 export function QuestionScreen() {
   const [selectedOption, setSelectedOption] = useState()
@@ -24,7 +16,7 @@ export function QuestionScreen() {
   } = useQuiz()
 
   async function handleUpdateAnswerList(answerIndex) {
-      await updateUserAnswers("bruna", {
+      await updateUserAnswers("bruna", { // TODO: get user name
         answerIndex,
         questionIndex,
       })
