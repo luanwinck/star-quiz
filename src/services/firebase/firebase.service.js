@@ -1,27 +1,8 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore, doc, getDoc, setDoc, getDocs, onSnapshot, updateDoc, increment } from 'firebase/firestore';
-import { useCallback, useEffect, useState } from "react";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyB6vQS34WztK7_Jvn6p0GnDznhhzJBQ9gw",
-  authDomain: "star-quiz-92519.firebaseapp.com",
-  projectId: "star-quiz-92519",
-  storageBucket: "star-quiz-92519.appspot.com",
-  messagingSenderId: "972511423407",
-  appId: "1:972511423407:web:f598caecf4f41448de9d5a"
-};
-
-export const initializeFirebaseApp = () => {
-  initializeApp(firebaseConfig);
-}
-
-initializeFirebaseApp()
-
-// ajustar isso daqui
-export const db = getFirestore();
-
-const COLLECTION_NAME = 'quiz'
-const QUIZ_NUMBER = "1" // TODO: tornar dinamico
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { useCallback } from "react";
+import { firebaseDb } from "../../App";
+import { COLLECTION_NAME } from '../../constants';
+import { useGlobalQuiz } from "../../context";
 
 function getUpdatedAnswers(currentAnswers, newAnswer) {
   const hasAlreadyAnswered = currentAnswers.some((answer) => answer.questionIndex === newAnswer.questionIndex)
@@ -38,41 +19,10 @@ function getUpdatedAnswers(currentAnswers, newAnswer) {
 }
 
 export function useQuiz() {
-  const [quizNumber, setQuizNumber] = useState(QUIZ_NUMBER)
-  const [questions, setQuestions] = useState([])
-  const [questionIndex, setQuestionIndex] = useState(0)
-
-  // async function getQuiz() {
-  //   try {
-  //     const quizRef = doc(db, COLLECTION_NAME, quizNumber);
-
-  //     const querySnapshot = await getDoc(quizRef);
-
-  //     const queryData = querySnapshot.data()
-
-  //     setQuestions(queryData.questions)
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   getQuiz()
-  // }, [])
-
-  useEffect(() => {
-    const unsub = onSnapshot(doc(db, COLLECTION_NAME, quizNumber), (doc) => {
-        const data = doc.data()
-
-        setQuestionIndex(data.currentQuestionIndex)
-        setQuestions(data.questions)
-    });
-
-    return unsub
-  }, [])
+  const [{ questions, questionIndex, quizNumber }] = useGlobalQuiz()
 
   const updateUserAnswers = useCallback(async (user, newAnswer) => {
-    const quizRef = doc(db, "quiz", QUIZ_NUMBER, "userAnswers", "bruna");
+    const quizRef = doc(firebaseDb, COLLECTION_NAME, quizNumber, "userAnswers", "bruna");
   
     const querySnapshot = await getDoc(quizRef);
   
@@ -85,7 +35,7 @@ export function useQuiz() {
 
   const changeCurrentQuestionIndex = useCallback(async (newQuestionIndex) => {
     try {
-      const quizRef = doc(db, COLLECTION_NAME, quizNumber);
+      const quizRef = doc(firebaseDb, COLLECTION_NAME, quizNumber);
 
       await updateDoc(quizRef, {
         currentQuestionIndex: newQuestionIndex
@@ -101,7 +51,7 @@ export function useQuiz() {
 
       if (questions.length === 0) return
 
-      const quizRef = doc(db, COLLECTION_NAME, quizNumber);
+      const quizRef = doc(firebaseDb, COLLECTION_NAME, quizNumber);
 
       await updateDoc(quizRef, {
         questions: questions.map((question, index) => {
@@ -121,8 +71,6 @@ export function useQuiz() {
   }, [questions])
 
   return {
-    questions,
-    questionIndex,
     updateUserAnswers,
     changeCurrentQuestionIndex,
     showQuestionResult,
@@ -143,7 +91,7 @@ async function createQuestions() {
     },
   ]
 
-  const quizRef = doc(db, COLLECTION_NAME, "1");
+  const quizRef = doc(firebaseDb, COLLECTION_NAME, "1");
 
   await updateDoc(quizRef, {
     questions

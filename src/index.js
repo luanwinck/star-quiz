@@ -3,14 +3,18 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-
-// import { initializeFirebaseApp } from './services'
-
-// initializeFirebaseApp()
+import { BrowserRouter } from 'react-router-dom';
+import { QuizGlobalProvider, UserGlobalProvider } from './context';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <UserGlobalProvider>
+        <QuizGlobalProvider>
+          <App />
+        </QuizGlobalProvider>
+      </UserGlobalProvider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

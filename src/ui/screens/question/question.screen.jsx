@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useGlobalQuiz } from '../../../context';
 
 import { useQuiz } from '../../../services'
 import { Button } from '../../components';
@@ -8,13 +9,17 @@ import './question.css'
 
 export function QuestionScreen() {
   const [selectedOption, setSelectedOption] = useState()
-  const {
+  const [{
     questions,
     questionIndex,
+  }] = useGlobalQuiz()
+
+  const {
     updateUserAnswers,
     changeCurrentQuestionIndex,
     showQuestionResult,
   } = useQuiz()
+
   const navigate = useNavigate()
 
   async function handleUpdateAnswerList(answerIndex) {

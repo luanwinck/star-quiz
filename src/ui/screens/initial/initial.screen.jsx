@@ -8,6 +8,7 @@ export function InitialScreen() {
 
   function handleGoToQuestions() {
     navigate('/questions')
+    // TODO: change status on firebase
   }
 
   return (
