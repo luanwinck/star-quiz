@@ -2,7 +2,6 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, doc, getDoc, setDoc, getDocs, onSnapshot, updateDoc, increment } from 'firebase/firestore';
 import { useCallback, useEffect, useState } from "react";
 
-
 const firebaseConfig = {
   apiKey: "AIzaSyB6vQS34WztK7_Jvn6p0GnDznhhzJBQ9gw",
   authDomain: "star-quiz-92519.firebaseapp.com",

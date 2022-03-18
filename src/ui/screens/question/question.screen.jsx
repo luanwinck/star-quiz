@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useQuiz } from '../../../services'
 import { Button } from '../../components';
@@ -14,6 +15,7 @@ export function QuestionScreen() {
     changeCurrentQuestionIndex,
     showQuestionResult,
   } = useQuiz()
+  const navigate = useNavigate()
 
   async function handleUpdateAnswerList(answerIndex) {
       await updateUserAnswers("bruna", { // TODO: get user name
@@ -24,12 +26,12 @@ export function QuestionScreen() {
       setSelectedOption(answerIndex)
   }
 
-  const questionNumber = questionIndex + 1
-  const { question, answers, hasBeenShownResult } = questions[questionIndex] || {}
-
   function handleNextQuestion() {
-    // TODO: validar se chegou na ultima pergunta
-    changeCurrentQuestionIndex(questionIndex + 1)
+    if (questions.length - 1 === questionIndex) {
+      navigate('/result')
+    } else {
+      changeCurrentQuestionIndex(questionIndex + 1)
+    }
   }
 
   function handlePrevQuestion() {
@@ -38,6 +40,13 @@ export function QuestionScreen() {
 
   function handleShowResult() {
     showQuestionResult()
+  }
+
+  const questionNumber = questionIndex + 1
+  const { question, answers, hasBeenShownResult } = questions[questionIndex] || {}
+
+  if (!question) {
+    return <div className="question" />
   }
 
   return (
@@ -52,6 +61,8 @@ export function QuestionScreen() {
             key={option}
             className={`question_option-button ${selectedOption === index ? 'question_option-button-selected' : ''}`}
             onClick={() => handleUpdateAnswerList(index)}
+            disabled={hasBeenShownResult}
+
           >
             {option}
           </button>
@@ -71,6 +82,7 @@ export function QuestionScreen() {
         <Button
           className="question_action-button"
           onClick={handleShowResult}
+          disabled={hasBeenShownResult}
         >
           Mostrar resultado
         </Button>
