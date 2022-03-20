@@ -18,15 +18,17 @@ function getUpdatedAnswers(currentAnswers, newAnswer) {
   })
 }
 
+// TODO: criar um hook pra função do usuário (observar e pegar as respostar dele)
+
 export function useQuiz() {
   const [{ questions, questionIndex, quizNumber }] = useGlobalQuiz()
 
   const updateUserAnswers = useCallback(async (user, newAnswer) => {
-    const quizRef = doc(firebaseDb, COLLECTION_NAME, quizNumber, "userAnswers", "bruna");
+    const quizRef = doc(firebaseDb, COLLECTION_NAME, quizNumber, "userAnswers", user);
   
     const querySnapshot = await getDoc(quizRef);
   
-    const currentAnswers = querySnapshot.data().answers || []
+    const currentAnswers = querySnapshot.data()?.answers || []
   
     await setDoc(quizRef, {
       answers: getUpdatedAnswers(currentAnswers, newAnswer)
@@ -47,8 +49,6 @@ export function useQuiz() {
 
   const showQuestionResult = useCallback(async () => {
     try {
-      console.log(questions)
-
       if (questions.length === 0) return
 
       const quizRef = doc(firebaseDb, COLLECTION_NAME, quizNumber);
@@ -70,10 +70,23 @@ export function useQuiz() {
     }
   }, [questions])
 
+  const changeStatus = useCallback(async (status) => {
+    try {
+      const quizRef = doc(firebaseDb, COLLECTION_NAME, quizNumber);
+
+      await updateDoc(quizRef, {
+        status
+      });
+    } catch (error) {
+      console.log(error)
+    }
+  }, [])
+
   return {
     updateUserAnswers,
     changeCurrentQuestionIndex,
     showQuestionResult,
+    changeStatus,
   }
 }
 
