@@ -1,14 +1,26 @@
 import { useNavigate } from 'react-router-dom';
 import { STAR_WARS_LOGO } from '../../../assets/images';
+import { useGlobalUser } from '../../../context';
+import { QuizStatusEnum } from '../../../enum';
+import { useQuiz } from '../../../services';
+import USERS from '../../../users'
 
 import './initial.css'
 
 export function InitialScreen() {
   const navigate = useNavigate()
+  const [user, setUser] = useGlobalUser()
+  const { changeStatus } = useQuiz()
 
   function handleGoToQuestions() {
     navigate('/questions')
-    // TODO: change status on firebase
+    changeStatus(QuizStatusEnum.STARTED)
+  }
+
+  function handleSelectUser(event) {
+    setUser({
+      user: event.target.value
+    })
   }
 
   return (
@@ -17,9 +29,18 @@ export function InitialScreen() {
 
       <img src={STAR_WARS_LOGO} className="initial_star-wars-logo" />
 
-      <button className="initial_start-button" onClick={handleGoToQuestions}>
-        Iniciar
-      </button>
+      {user.isHost ? (
+        <button className="initial_start-button" onClick={handleGoToQuestions}>
+          Iniciar
+        </button>
+      ) : (
+        <select name="select-user" className="initial_select-button" onChange={handleSelectUser}>
+          <option disabled defaultValue value> -- Escolha seu Jedi -- </option>
+          {USERS.map((user) => (
+            <option value={user.user} key={user.user}>{user.name}</option>
+          ))}
+        </select>
+      )}
     </div>
   )
 }
