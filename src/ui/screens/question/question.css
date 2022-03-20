@@ -51,6 +51,22 @@
   filter: brightness(70%);
 }
 
+.question_option-button-right {
+  background-color: #00bb00;
+  animation: button-blink .75s linear forwards;
+}
+
+@keyframes button-blink {
+  0% { opacity: 1; }
+  15% { opacity: 0.5; }
+  30% { opacity: 1; }
+  45% { opacity: 0.5; }
+  60% { opacity: 1; }
+  75% { opacity: 0.5; }
+  90% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
 .question_option-button-wrong {
   background-color: #b33333;
 }

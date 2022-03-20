@@ -1,18 +1,33 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useGlobalQuiz } from '../../../context';
+import { useGlobalQuiz, useGlobalUser } from '../../../context';
 
 import { useQuiz } from '../../../services'
 import { Button } from '../../components';
 
 import './question.css'
 
+function getOptionButtonClassName(index, selectedOption, answerIndex, hasBeenShownResult) {
+  if (!hasBeenShownResult) return ''
+
+  if (index === selectedOption) {
+    if (selectedOption === answerIndex) {
+      return 'question_option-button-right'
+    }
+
+    return 'question_option-button-wrong'
+  } else if (index === answerIndex) {
+    return 'question_option-button-right'
+  }
+}
+
 export function QuestionScreen() {
-  const [selectedOption, setSelectedOption] = useState()
+  const [selectedOption, setSelectedOption] = useState(null)
   const [{
     questions,
     questionIndex,
   }] = useGlobalQuiz()
+  const [user] = useGlobalUser()
 
   const {
     updateUserAnswers,
@@ -22,17 +37,23 @@ export function QuestionScreen() {
 
   const navigate = useNavigate()
 
+  const isLastQuestion = questions.length - 1 === questionIndex
+
+  useEffect(() => {
+    setSelectedOption(null)
+  }, [questionIndex])
+
   async function handleUpdateAnswerList(answerIndex) {
-      await updateUserAnswers("bruna", { // TODO: get user name
+      await updateUserAnswers(user.user, {
         answerIndex,
         questionIndex,
       })
-      
+
       setSelectedOption(answerIndex)
   }
 
   function handleNextQuestion() {
-    if (questions.length - 1 === questionIndex) {
+    if (isLastQuestion) {
       navigate('/result')
     } else {
       changeCurrentQuestionIndex(questionIndex + 1)
@@ -48,7 +69,7 @@ export function QuestionScreen() {
   }
 
   const questionNumber = questionIndex + 1
-  const { question, answers, hasBeenShownResult } = questions[questionIndex] || {}
+  const { question, answers, answerIndex, hasBeenShownResult } = questions[questionIndex] || {}
 
   if (!question) {
     return <div className="question" />
@@ -64,7 +85,11 @@ export function QuestionScreen() {
         {answers?.map((option, index) => (
           <button
             key={option}
-            className={`question_option-button ${selectedOption === index ? 'question_option-button-selected' : ''}`}
+            className={`
+              question_option-button 
+              ${selectedOption === index ? 'question_option-button-selected' : ''}
+              ${getOptionButtonClassName(index, selectedOption, answerIndex, hasBeenShownResult)}
+            `} // TODO: pegar a opção selecionado caso o host volte na pergunta anterior
             onClick={() => handleUpdateAnswerList(index)}
             disabled={hasBeenShownResult}
 
@@ -74,32 +99,31 @@ export function QuestionScreen() {
         ))}
       </div>
 
-      {hasBeenShownResult && <span>Vai mostrar os botões com certo ou errado!!!</span>}
-
-      <div className="question_action-buttons-container">
-        <Button
-          className="question_action-button"
-          onClick={handlePrevQuestion}
-          disabled={questionIndex === 0}
-        >
-          Anterior
-        </Button>
-        <Button
-          className="question_action-button"
-          onClick={handleShowResult}
-          disabled={hasBeenShownResult}
-        >
-          Mostrar resultado
-        </Button>
-        <Button
-          className="question_action-button"
-          onClick={handleNextQuestion}
-          disabled={!hasBeenShownResult}
-        >
-          Próxima
-        </Button>
-      </div>
-      
+      {user.isHost && (
+        <div className="question_action-buttons-container">
+          <Button
+            className="question_action-button"
+            onClick={handlePrevQuestion}
+            disabled={questionIndex === 0}
+          >
+            Anterior
+          </Button>
+          <Button
+            className="question_action-button"
+            onClick={handleShowResult}
+            disabled={hasBeenShownResult}
+          >
+            Mostrar resultado
+          </Button>
+          <Button
+            className="question_action-button"
+            onClick={handleNextQuestion}
+            disabled={!hasBeenShownResult}
+          >
+            {isLastQuestion ? "Resultado" : "Próxima"}
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

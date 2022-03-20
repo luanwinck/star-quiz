@@ -14,3 +14,7 @@
 .button:active {
   filter: brightness(85%);
 }
+
+.buttton-disabled {
+  filter: brightness(70%);
+}
