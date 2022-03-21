@@ -1,7 +1,7 @@
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, getDocs, setDoc, updateDoc, collection, query } from 'firebase/firestore';
 import { useCallback } from "react";
 import { firebaseDb } from "../../App";
-import { COLLECTION_NAME } from '../../constants';
+import { QUIZ_COLLECTION_NAME, RANKING_COLLECTION_NAME } from '../../constants';
 import { useGlobalQuiz } from "../../context";
 
 function getUpdatedAnswers(currentAnswers, newAnswer) {
@@ -24,7 +24,7 @@ export function useQuiz() {
   const [{ questions, questionIndex, quizNumber }] = useGlobalQuiz()
 
   const updateUserAnswers = useCallback(async (user, newAnswer) => {
-    const quizRef = doc(firebaseDb, COLLECTION_NAME, quizNumber, "userAnswers", user);
+    const quizRef = doc(firebaseDb, QUIZ_COLLECTION_NAME, quizNumber, "userAnswers", user);
   
     const querySnapshot = await getDoc(quizRef);
   
@@ -37,7 +37,7 @@ export function useQuiz() {
 
   const changeCurrentQuestionIndex = useCallback(async (newQuestionIndex) => {
     try {
-      const quizRef = doc(firebaseDb, COLLECTION_NAME, quizNumber);
+      const quizRef = doc(firebaseDb, QUIZ_COLLECTION_NAME, quizNumber);
 
       await updateDoc(quizRef, {
         currentQuestionIndex: newQuestionIndex
@@ -51,7 +51,7 @@ export function useQuiz() {
     try {
       if (questions.length === 0) return
 
-      const quizRef = doc(firebaseDb, COLLECTION_NAME, quizNumber);
+      const quizRef = doc(firebaseDb, QUIZ_COLLECTION_NAME, quizNumber);
 
       await updateDoc(quizRef, {
         questions: questions.map((question, index) => {
@@ -72,7 +72,7 @@ export function useQuiz() {
 
   const changeStatus = useCallback(async (status) => {
     try {
-      const quizRef = doc(firebaseDb, COLLECTION_NAME, quizNumber);
+      const quizRef = doc(firebaseDb, QUIZ_COLLECTION_NAME, quizNumber);
 
       await updateDoc(quizRef, {
         status
@@ -90,6 +90,88 @@ export function useQuiz() {
   }
 }
 
+export function useResult() {
+  const [{ quizNumber, questions }] = useGlobalQuiz()
+
+  function countUserPontuation(user, answers) {
+    if (!answers) return 0
+
+    const pontuation = answers.reduce((acc, answer) => {
+      const { questionIndex, answerIndex } = answer
+
+      console.log({ answer, questions })
+
+      const question = questions[questionIndex]
+
+      const isRight = question.answerIndex === answerIndex
+
+      return isRight ? acc + 1 : acc
+    }, 0)
+
+    return {
+      user,
+      name: '', // TODO: pegar o name tmb
+      pontuation,
+    }
+  }
+
+  const getUserPontuations = useCallback(async () => {
+    const q = query(collection(firebaseDb, QUIZ_COLLECTION_NAME, quizNumber, "userAnswers"));
+
+    const querySnapshot = await getDocs(q);
+
+    let usersPontuations = []
+
+    querySnapshot.forEach((doc) => {
+      usersPontuations = [
+        ...usersPontuations,
+        countUserPontuation(doc.id, doc.data().answers),
+      ]
+    })
+
+    const sorttedPontuations = usersPontuations.sort((a, b) => b.pontuation - a.pontuation)
+
+    updateRanking(sorttedPontuations)
+
+    return sorttedPontuations
+  }, [questions])
+
+  const getRanking = useCallback(async () => {
+    const quizRef = doc(firebaseDb, QUIZ_COLLECTION_NAME, "ranking");
+  
+    const querySnapshot = await getDoc(quizRef);
+  
+    return querySnapshot.data()?.pontuations || []
+  }, [])
+
+  function handleUpdateRanking(currentPontuation, newPontuations) {
+    return currentPontuation.map((cur) => {
+      const user = newPontuations.find(({ user }) => user === cur.user)
+
+      return {
+        ...cur,
+        prevPontuation: cur.pontuation,
+        pontuation: user.pontuation ? cur.pontuation + user.pontuation : cur.pontuation,
+      }
+    })
+  }
+
+  const updateRanking = useCallback(async (newPontuations) => {
+    const quizRef = doc(firebaseDb, QUIZ_COLLECTION_NAME, "ranking");
+
+    const currentPontuations = await getRanking()
+  
+    await setDoc(quizRef, {
+      pontuations: handleUpdateRanking(currentPontuations, newPontuations)
+    })
+  }, [questions])
+
+  return {
+    getUserPontuations,
+    getRanking,
+  }
+}
+
 async function createQuestions() {
   const questions = [
     {
@@ -104,7 +186,7 @@ async function createQuestions() {
     },
   ]
 
-  const quizRef = doc(firebaseDb, COLLECTION_NAME, "1");
+  const quizRef = doc(firebaseDb, QUIZ_COLLECTION_NAME, "1");
 
   await updateDoc(quizRef, {
     questions

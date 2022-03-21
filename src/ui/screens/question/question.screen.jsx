@@ -54,7 +54,7 @@ export function QuestionScreen() {
 
   function handleNextQuestion() {
     if (isLastQuestion) {
-      navigate('/result')
+      navigate('/results')
     } else {
       changeCurrentQuestionIndex(questionIndex + 1)
     }

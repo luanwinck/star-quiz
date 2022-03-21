@@ -1,1 +1,1 @@
-export { useQuiz } from './firebase/firebase.service'
+export { useQuiz, useResult } from './firebase/firebase.service' // TODO: separar isso

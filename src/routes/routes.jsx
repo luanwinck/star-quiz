@@ -8,7 +8,7 @@ import { Loader } from '../ui/components'
 const redirectPaths = {
   [QuizStatusEnum.NOT_STARTED]: '/initial',
   [QuizStatusEnum.STARTED]: '/questions',
-  [QuizStatusEnum.FINISHED]: '/result',
+  [QuizStatusEnum.FINISHED]: '/results',
 }
 
 export function AppRoutes() {

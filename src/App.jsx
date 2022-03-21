@@ -4,7 +4,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, doc, onSnapshot } from 'firebase/firestore';
 import { useEffect } from 'react';
 import { useGlobalQuiz } from './context';
-import { COLLECTION_NAME } from './constants';
+import { QUIZ_COLLECTION_NAME } from './constants';
 
 const firebaseConfig = {
   apiKey: "AIzaSyB6vQS34WztK7_Jvn6p0GnDznhhzJBQ9gw",
@@ -29,7 +29,7 @@ function App() {
   useEffect(() => {
     const quizNumber = "1" // TODO: get quiz number
 
-    const unsub = onSnapshot(doc(firebaseDb, COLLECTION_NAME, quizNumber), (doc) => {
+    const unsub = onSnapshot(doc(firebaseDb, QUIZ_COLLECTION_NAME, quizNumber), (doc) => {
         const { questions, currentQuestionIndex, status } = doc.data()
 
         setGlobalQuiz({
