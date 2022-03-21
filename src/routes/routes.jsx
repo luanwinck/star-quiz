@@ -1,6 +1,6 @@
 import { Route, Routes, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
-import { InitialScreen, QuestionScreen } from '../ui/screens'
+import { InitialScreen, QuestionScreen, ResultsScreen } from '../ui/screens'
 import { useGlobalQuiz, useGlobalUser } from '../context'
 import { QuizStatusEnum } from '../enum'
 import { Loader } from '../ui/components'
@@ -37,6 +37,7 @@ export function AppRoutes() {
       <Route path="/" element={<Loader />} />
       <Route path="/initial" element={<InitialScreen />} />
       <Route path="/questions" element={<QuestionScreen />} />
+      <Route path="/results" element={<ResultsScreen />} />
     </Routes>
   )
 }
