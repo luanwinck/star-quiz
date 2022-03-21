@@ -1,8 +1,8 @@
 import createGlobalState from "react-create-global-state";
 
 const initialState = {
-  status: "NOT_STARTED",
-  quizNumber: "1",
+  status: '',
+  quizNumber: '1',
   questions: [],
   questionIndex: 0,
 }
