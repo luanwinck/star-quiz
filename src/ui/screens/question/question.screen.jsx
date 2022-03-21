@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalQuiz, useGlobalUser } from '../../../context';
-
-import { useQuiz } from '../../../services'
+import { QuizStatusEnum } from '../../../enum';
+import { useQuiz, useResult } from '../../../services'
 import { Button } from '../../components';
 
 import './question.css'
@@ -33,7 +33,9 @@ export function QuestionScreen() {
     updateUserAnswers,
     changeCurrentQuestionIndex,
     showQuestionResult,
+    changeStatus,
   } = useQuiz()
+  const { updateRanking } = useResult()
 
   const navigate = useNavigate()
 
@@ -44,7 +46,7 @@ export function QuestionScreen() {
   }, [questionIndex])
 
   async function handleUpdateAnswerList(answerIndex) {
-      await updateUserAnswers(user.user, {
+      await updateUserAnswers(user, {
         answerIndex,
         questionIndex,
       })
@@ -55,6 +57,8 @@ export function QuestionScreen() {
   function handleNextQuestion() {
     if (isLastQuestion) {
       navigate('/results')
+      changeStatus(QuizStatusEnum.FINISHED)
+      updateRanking()
     } else {
       changeCurrentQuestionIndex(questionIndex + 1)
     }

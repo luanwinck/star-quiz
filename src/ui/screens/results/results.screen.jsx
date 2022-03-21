@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useGlobalQuiz } from '../../../context'
 import { useResult } from '../../../services'
 import { Button } from '../../components'
 
@@ -7,18 +8,17 @@ import './results.css'
 export function ResultsScreen() {
   const { getUserPontuations } = useResult()
   const [winners, setWinners] = useState([])
+  const [{ questions }] = useGlobalQuiz()
 
   useEffect(() => {
     async function handleGetWinners() {
-      const winners = await getUserPontuations()
-
-      console.log(winners)
+      const winners = await getUserPontuations() 
 
       setWinners(winners)
     }
 
     handleGetWinners()
-  }, [])
+  }, [questions])
 
   return (
     <div className="results_container">
@@ -31,7 +31,7 @@ export function ResultsScreen() {
             src="https://bandodequadrados.com/img/imagem_noticia/7fa2a9372216dcc2beff8be6c4cba83d.jpg"
             alt=""
           />
-          <span className="results_winner-name">{winners[1]?.user}</span>
+          <span className="results_winner-name">{winners[1]?.name}</span>
         </div>
 
         <div className="results_winner-container results_winner-container-first">
@@ -40,7 +40,7 @@ export function ResultsScreen() {
             src="https://bandodequadrados.com/img/imagem_noticia/895754c35dc717def2dbaff04a2551f4.jpg"
             alt=""
           />
-          <span className="results_winner-name results_winner-name-first">{winners[0]?.user}</span>
+          <span className="results_winner-name results_winner-name-first">{winners[0]?.name}</span>
         </div>
 
         <div className="results_winner-container results_winner-container-third">
@@ -49,7 +49,7 @@ export function ResultsScreen() {
             src="https://bandodequadrados.com/img/imagem_noticia/983bbd0e58b56e74b3de67a851b53d70.jpg"
             alt=""
           />
-          <span className="results_winner-name">{winners[2]?.user}</span>
+          <span className="results_winner-name">{winners[2]?.name}</span>
         </div>
       </div>
 

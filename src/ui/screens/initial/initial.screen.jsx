@@ -18,8 +18,10 @@ export function InitialScreen() {
   }
 
   function handleSelectUser(event) {
+    const user = USERS.find((user) => user.user === event.target.value)
+
     setUser({
-      user: event.target.value
+      ...user,
     })
   }
 

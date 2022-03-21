@@ -24,14 +24,15 @@ export function useQuiz() {
   const [{ questions, questionIndex, quizNumber }] = useGlobalQuiz()
 
   const updateUserAnswers = useCallback(async (user, newAnswer) => {
-    const quizRef = doc(firebaseDb, QUIZ_COLLECTION_NAME, quizNumber, "userAnswers", user);
-  
+    const quizRef = doc(firebaseDb, QUIZ_COLLECTION_NAME, quizNumber, "userAnswers", user.user);
+
     const querySnapshot = await getDoc(quizRef);
   
     const currentAnswers = querySnapshot.data()?.answers || []
   
     await setDoc(quizRef, {
-      answers: getUpdatedAnswers(currentAnswers, newAnswer)
+      answers: getUpdatedAnswers(currentAnswers, newAnswer),
+      name: user.name ?? user.user,
     })
   }, [])
 
@@ -93,13 +94,11 @@ export function useQuiz() {
 export function useResult() {
   const [{ quizNumber, questions }] = useGlobalQuiz()
 
-  function countUserPontuation(user, answers) {
+  function countUserPontuation(user, { answers, name }) {
     if (!answers) return 0
 
     const pontuation = answers.reduce((acc, answer) => {
       const { questionIndex, answerIndex } = answer
-
-      console.log({ answer, questions })
 
       const question = questions[questionIndex]
 
@@ -110,7 +109,7 @@ export function useResult() {
 
     return {
       user,
-      name: '', // TODO: pegar o name tmb
+      name,
       pontuation,
     }
   }
@@ -125,13 +124,11 @@ export function useResult() {
     querySnapshot.forEach((doc) => {
       usersPontuations = [
         ...usersPontuations,
-        countUserPontuation(doc.id, doc.data().answers),
+        countUserPontuation(doc.id, doc.data()),
       ]
     })
 
     const sorttedPontuations = usersPontuations.sort((a, b) => b.pontuation - a.pontuation)
-
-    updateRanking(sorttedPontuations)
 
     return sorttedPontuations
   }, [questions])
@@ -156,10 +153,11 @@ export function useResult() {
     })
   }
 
-  const updateRanking = useCallback(async (newPontuations) => {
+  const updateRanking = useCallback(async () => {
     const quizRef = doc(firebaseDb, QUIZ_COLLECTION_NAME, "ranking");
 
     const currentPontuations = await getRanking()
+    const newPontuations = await getUserPontuations()
   
     await setDoc(quizRef, {
       pontuations: handleUpdateRanking(currentPontuations, newPontuations)
@@ -169,6 +167,7 @@ export function useResult() {
   return {
     getUserPontuations,
     getRanking,
+    updateRanking,
   }
 }
 

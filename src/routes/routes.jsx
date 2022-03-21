@@ -17,7 +17,7 @@ export function AppRoutes() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!user || !quiz.status) {
+    if (!user && !quiz.status) {
       navigate('/')
       return
     }

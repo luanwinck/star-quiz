@@ -5,6 +5,7 @@ const AUTH_KEY = "STAR_QUIZ_USER";
 const initialState = {
   isHost: false,
   user: '',
+  name: '',
 };
 
 const stringifyUser = localStorage.getItem(AUTH_KEY);
@@ -15,9 +16,10 @@ const [_useGlobalUser, UserGlobalProvider] = createGlobalState(user);
 function useGlobalUser() {
   const [globalUser, _setGlobalUser] = _useGlobalUser();
 
-  function setState({ user }) {
+  function setState({ user, name }) {
     const newUser = {
       user,
+      name,
       isHost: user === 'luan.winck', // TODO: como definir o host
     }
     
