@@ -36,8 +36,8 @@ export function InitialScreen() {
           Iniciar
         </button>
       ) : (
-        <select name="select-user" className="initial_select-button" onChange={handleSelectUser}>
-          <option disabled defaultValue value> -- Escolha seu Jedi -- </option>
+        <select name="select-user" className="initial_select-button" onChange={handleSelectUser} defaultValue="defaultValue">
+          <option disabled value="defaultValue"> -- Escolha seu Jedi -- </option>
           {USERS.map((user) => (
             <option value={user.user} key={user.user}>{user.name}</option>
           ))}

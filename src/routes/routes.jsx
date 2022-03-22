@@ -38,6 +38,7 @@ export function AppRoutes() {
       <Route path="/initial" element={<InitialScreen />} />
       <Route path="/questions" element={<QuestionScreen />} />
       <Route path="/results" element={<ResultsScreen />} />
+      <Route path="/*" element={<Loader />} />
     </Routes>
   )
 }

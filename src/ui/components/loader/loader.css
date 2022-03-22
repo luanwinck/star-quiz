@@ -3,6 +3,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background-image: url("../../../assets/images/star-sky-background.jpeg");
 }
 
 .loader {
