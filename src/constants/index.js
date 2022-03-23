@@ -1,7 +1,7 @@
 const QUIZ_COLLECTION_NAME = 'quiz'
-const RANKING_COLLECTION_NAME = 'ranking'
+const RANKING_DOC_NAME = 'ranking'
 
 export {
   QUIZ_COLLECTION_NAME,
-  RANKING_COLLECTION_NAME,
+  RANKING_DOC_NAME,
 }

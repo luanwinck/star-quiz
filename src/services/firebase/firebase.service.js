@@ -1,7 +1,7 @@
 import { doc, getDoc, getDocs, setDoc, updateDoc, collection, query } from 'firebase/firestore';
 import { useCallback } from "react";
 import { firebaseDb } from "../../App";
-import { QUIZ_COLLECTION_NAME, RANKING_COLLECTION_NAME } from '../../constants';
+import { QUIZ_COLLECTION_NAME, RANKING_DOC_NAME } from '../../constants';
 import { useGlobalQuiz } from "../../context";
 
 function getUpdatedAnswers(currentAnswers, newAnswer) {
@@ -134,7 +134,7 @@ export function useResult() {
   }, [questions])
 
   const getRanking = useCallback(async () => {
-    const quizRef = doc(firebaseDb, QUIZ_COLLECTION_NAME, "ranking");
+    const quizRef = doc(firebaseDb, QUIZ_COLLECTION_NAME, RANKING_DOC_NAME);
   
     const querySnapshot = await getDoc(quizRef);
   
@@ -154,7 +154,7 @@ export function useResult() {
   }
 
   const updateRanking = useCallback(async () => {
-    const quizRef = doc(firebaseDb, QUIZ_COLLECTION_NAME, "ranking");
+    const quizRef = doc(firebaseDb, QUIZ_COLLECTION_NAME, RANKING_DOC_NAME);
 
     const currentPontuations = await getRanking()
     const newPontuations = await getUserPontuations()

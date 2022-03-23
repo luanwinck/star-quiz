@@ -1,22 +1,46 @@
 export default [
   {
-    name: "Luan Winck",
-    user: "luan.winck",
+    name: 'André',
+    user: 'andre.dorneles',
   },
   {
-    name: "Leonado Marcos",
-    user: "leonardo.marcos",
+    name: 'Betina',
+    user: 'betina.ozorio',
   },
   {
-    name: "Bruna Kunzler",
-    user: "bruna.kunzler",
+    name: 'Bruna',
+    user: 'bruna.kunzler',
   },
   {
-    name: "Rafael Fumegalli",
-    user: "rafael.fumegalli",
+    name: 'Bruno',
+    user: 'bruno.cechinel',
   },
   {
-    name: "Bruno Cechinel",
-    user: "bruno.cechinel",
+    name: 'Caio',
+    user: 'caio.amaral',
+  },
+  {
+    name: 'Fumegalli',
+    user: 'rafael.fumegalli',
+  },
+  {
+    name: 'João',
+    user: 'joao.sobrinho',
+  },
+  {
+    name: 'Léo',
+    user: 'leonardo.marcos',
+  },
+  {
+    name: 'Luan',
+    user: 'luan.winck',
+  },
+  {
+    name: 'Mario',
+    user: 'mario.ferreira',
+  },
+  {
+    name: 'Pedro',
+    user: 'pedro.fleck',
   },
 ]

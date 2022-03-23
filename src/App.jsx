@@ -24,10 +24,10 @@ initializeFirebaseApp()
 export const firebaseDb = getFirestore();
 
 function App() {
-  const [, setGlobalQuiz] = useGlobalQuiz()
+  const [{ quizNumber }, setGlobalQuiz] = useGlobalQuiz()
 
   useEffect(() => {
-    const quizNumber = "1" // TODO: get quiz number
+    // TODO: get quiz number
 
     const unsub = onSnapshot(doc(firebaseDb, QUIZ_COLLECTION_NAME, quizNumber), (doc) => {
         const { questions, currentQuestionIndex, status } = doc.data()
