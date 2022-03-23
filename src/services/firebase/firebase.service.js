@@ -102,6 +102,8 @@ export function useResult() {
 
       const question = questions[questionIndex]
 
+      if (!question) return acc
+
       const isRight = question.answerIndex === answerIndex
 
       return isRight ? acc + 1 : acc
@@ -115,6 +117,8 @@ export function useResult() {
   }
 
   const getUserPontuations = useCallback(async () => {
+    if (questions.length === 0) return []
+
     const q = query(collection(firebaseDb, QUIZ_COLLECTION_NAME, quizNumber, "userAnswers"));
 
     const querySnapshot = await getDocs(q);
@@ -142,13 +146,15 @@ export function useResult() {
   }, [])
 
   function handleUpdateRanking(currentPontuation, newPontuations) {
-    return currentPontuation.map((cur) => {
-      const user = newPontuations.find(({ user }) => user === cur.user)
+    return currentPontuation.map((currentUser) => {
+      const user = newPontuations.find(({ user }) => user === currentUser.user)
+
+      if (!user) return currentUser
 
       return {
-        ...cur,
-        prevPontuation: cur.pontuation,
-        pontuation: user.pontuation ? cur.pontuation + user.pontuation : cur.pontuation,
+        ...currentUser,
+        prevPontuation: currentUser.pontuation,
+        pontuation: user.pontuation ? currentUser.pontuation + user.pontuation : currentUser.pontuation,
       }
     })
   }

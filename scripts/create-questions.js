@@ -2,6 +2,7 @@ const { firebaseDb } = require('./firebase')
 const { updateDoc, doc, collection, setDoc } = require("firebase/firestore");
 
 const QUIZ_COLLECTION_NAME = 'quiz'
+const QUIZ_DOC_TEST = 'teste_01'
 
 const questions = [
   {
@@ -30,14 +31,14 @@ function getQuestion(v, i) {
   }
 }
 
-const fakeQuestions = Array.from({ length: 10 }, getQuestion)
+const fakeQuestions = Array.from({ length: 5 }, getQuestion)
 
 async function createQuestions() {
   const quizRef = collection(firebaseDb, QUIZ_COLLECTION_NAME);
 
   console.log(fakeQuestions)
 
-  await setDoc(doc(quizRef, "teste_01"), 
+  await setDoc(doc(quizRef, QUIZ_DOC_TEST), 
     {
       currentQuestionIndex: 0,
       questions: fakeQuestions,
@@ -48,12 +49,21 @@ async function createQuestions() {
   console.log('Success')
 }
 
-async function update() {
-  const quizRef = doc(firebaseDb, QUIZ_COLLECTION_NAME, "teste_01");
+async function resetQuestions() {
+  const quizRef = doc(firebaseDb, QUIZ_COLLECTION_NAME, QUIZ_DOC_TEST);
+
+  console.log(fakeQuestions)
 
   await updateDoc(quizRef, {
-    questions: fakeQuestions
+    currentQuestionIndex: 0,
+    questions: fakeQuestions,
+    status: 'NOT_STARTED',
   });
+
+  // Apagar userAnswers
+
+  console.log('Success')
 }
 
-createQuestions()
+resetQuestions() 
+// createQuestions()
