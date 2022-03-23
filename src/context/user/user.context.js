@@ -3,7 +3,6 @@ import createGlobalState from "react-create-global-state";
 const AUTH_KEY = "STAR_QUIZ_USER";
 
 const initialState = {
-  isHost: false,
   user: '',
   name: '',
 };
@@ -20,7 +19,6 @@ function useGlobalUser() {
     const newUser = {
       user,
       name,
-      isHost: user === 'luan.winck', // TODO: como definir o host
     }
     
     localStorage.setItem(AUTH_KEY, JSON.stringify(newUser));

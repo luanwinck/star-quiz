@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useGlobalQuiz } from '../../../context'
 import { useResult } from '../../../services'
 import { Button } from '../../components'
@@ -9,6 +10,7 @@ export function ResultsScreen() {
   const { getUserPontuations } = useResult()
   const [winners, setWinners] = useState([])
   const [{ questions }] = useGlobalQuiz()
+  const navigate = useNavigate()
 
   useEffect(() => {
     async function handleGetWinners() {
@@ -19,6 +21,10 @@ export function ResultsScreen() {
 
     handleGetWinners()
   }, [questions])
+
+  function handleGoToRanking() {
+    navigate('/ranking')
+  } 
 
   return (
     <div className="results_container">
@@ -53,7 +59,7 @@ export function ResultsScreen() {
         </div>
       </div>
 
-      <Button>
+      <Button onClick={handleGoToRanking}>
         Ranking
       </Button>
     </div>
