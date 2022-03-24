@@ -2,6 +2,7 @@ const { firebaseDb } = require('./firebase')
 const { updateDoc, doc, collection, setDoc } = require("firebase/firestore");
 
 const QUIZ_COLLECTION_NAME = 'quiz'
+const RANKING_DOC_TEST = 'ranking'
 
 const pontuations = [
   {
@@ -68,21 +69,13 @@ async function createRanking() {
 
   console.log(pontuations)
 
-  await setDoc(doc(quizRef, "ranking_teste_01"), 
+  await setDoc(doc(quizRef, RANKING_DOC_TEST), 
     {
       pontuations: pontuationWithPrev,
     }
   );
 
   console.log('Success')
-}
-
-async function reset() {
-  const quizRef = doc(firebaseDb, QUIZ_COLLECTION_NAME, "ranking_teste_01");
-
-  await updateDoc(quizRef, {
-    questions: fakeQuestions
-  });
 }
 
 createRanking()
