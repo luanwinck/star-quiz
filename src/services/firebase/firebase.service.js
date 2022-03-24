@@ -142,7 +142,9 @@ export function useResult() {
   
     const querySnapshot = await getDoc(quizRef);
   
-    return querySnapshot.data()?.pontuations || []
+    const pontuations = querySnapshot.data()?.pontuations || []
+
+    return pontuations.sort((a, b) => b.pontuation - a.pontuation)
   }, [])
 
   function handleUpdateRanking(currentPontuation, newPontuations) {

@@ -7,6 +7,8 @@ import { Button } from '../../components';
 
 import './question.css'
 
+const getRandumNumber = () => Math.floor(Math.random() * 1000) // TODO: remover isso
+
 function getOptionButtonClassName(index, selectedOption, answerIndex, hasBeenShownResult) {
   if (!hasBeenShownResult) return ''
 
@@ -46,12 +48,12 @@ export function QuestionScreen() {
   }, [questionIndex])
 
   async function handleUpdateAnswerList(answerIndex) {
+      setSelectedOption(answerIndex)
+
       await updateUserAnswers(user, {
         answerIndex,
         questionIndex,
       })
-
-      setSelectedOption(answerIndex)
   }
 
   function handleNextQuestion() {
@@ -88,7 +90,7 @@ export function QuestionScreen() {
       <div className="question_options-container">
         {answers?.map((option, index) => (
           <button
-            key={option}
+            key={getRandumNumber()}
             className={`
               question_option-button 
               ${selectedOption === index ? 'question_option-button-selected' : ''}

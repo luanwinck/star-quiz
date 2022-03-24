@@ -15,9 +15,11 @@ function UserPontuation({ name, user, pontuation, prevPontuation, index }) {
     ? `${pontuation} (+${pontuation - prevPontuation})`
     : pontuation
   const hasMedal = !!MEDALS[index]
+  const position = index + 1
 
   return (
-    <div className="ranking_user-container">
+    <div className={`ranking_user-container ${index > 0 && 'ranking_user-container-border'}`}>
+      <span className="ranking_user-text">{position}-</span>
       <span className="ranking_user-text">{name || user}</span>
       <span className="ranking_user-text">{pontuationLabel}</span>
       {hasMedal && <span className="ranking_user-text">{MEDALS[index]}</span>}

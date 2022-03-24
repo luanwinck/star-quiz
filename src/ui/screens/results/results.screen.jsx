@@ -6,17 +6,64 @@ import { Button } from '../../components'
 
 import './results.css'
 
+function Winner({
+  winner,
+  containerClassName,
+  imageClassName,
+  textClassName,
+  image,
+}) {
+  if (!winner) return null
+
+  return (
+    <div className={`results_winner-container ${containerClassName}`}>
+      <img 
+        className={`results_winner-image ${imageClassName}`}
+        src={image}
+        alt=""
+      />
+      <span className={`results_winner-name ${textClassName}`}>{winner.name}</span>
+      <span className={`results_winner-name ${textClassName}`}>Acertos: {winner.pontuation}</span>
+    </div>
+  )
+}
+
 export function ResultsScreen() {
   const { getUserPontuations } = useResult()
   const [winners, setWinners] = useState([])
   const [{ questions }] = useGlobalQuiz()
   const navigate = useNavigate()
 
+  function handleWinners(winners) {
+    const pontuationsObj = winners.reduce((acc, user) => {
+      const pontuationUsers = acc[user.pontuation]
+
+      if (pontuationUsers) {
+        const newPontuationUsers = {
+          name: `${pontuationUsers.name} e ${user.name}`,
+          pontuation: user.pontuation,
+        }
+
+        return {
+          ...acc,
+          [user.pontuation]: newPontuationUsers,
+        }
+      }
+
+      return {
+        ...acc,
+        [user.pontuation]: user,
+      }
+    }, {})
+
+    return Object.values(pontuationsObj).sort((a, b) => b.pontuation - a.pontuation)
+  }
+
   useEffect(() => {
     async function handleGetWinners() {
       const winners = await getUserPontuations() 
 
-      setWinners(winners)
+      setWinners(handleWinners(winners))
     }
 
     handleGetWinners()
@@ -31,32 +78,27 @@ export function ResultsScreen() {
       <h1 className="results_title">E os jedis vencedores são:</h1>
 
       <div className="results_winners-container">
-        <div className="results_winner-container results_winner-container-second">
-          <img 
-            className="results_winner-image results_winner-image-second"
-            src="https://bandodequadrados.com/img/imagem_noticia/7fa2a9372216dcc2beff8be6c4cba83d.jpg"
-            alt=""
-          />
-          <span className="results_winner-name">{winners[1]?.name}</span>
-        </div>
+        <Winner
+          winner={winners[1]}
+          containerClassName="results_winner-container-second"
+          imageClassName="results_winner-image-second"
+          image="https://bandodequadrados.com/img/imagem_noticia/7fa2a9372216dcc2beff8be6c4cba83d.jpg"
+        />
 
-        <div className="results_winner-container results_winner-container-first">
-          <img 
-            className="results_winner-image results_winner-image-first"
-            src="https://bandodequadrados.com/img/imagem_noticia/895754c35dc717def2dbaff04a2551f4.jpg"
-            alt=""
-          />
-          <span className="results_winner-name results_winner-name-first">{winners[0]?.name}</span>
-        </div>
+        <Winner
+          winner={winners[0]}
+          containerClassName="results_winner-container-first"
+          imageClassName="results_winner-image-first"
+          textClassName="results_winner-name-first"
+          image="https://bandodequadrados.com/img/imagem_noticia/895754c35dc717def2dbaff04a2551f4.jpg"
+        />
 
-        <div className="results_winner-container results_winner-container-third">
-          <img 
-            className="results_winner-image results_winner-image-third"
-            src="https://bandodequadrados.com/img/imagem_noticia/983bbd0e58b56e74b3de67a851b53d70.jpg"
-            alt=""
-          />
-          <span className="results_winner-name">{winners[2]?.name}</span>
-        </div>
+        <Winner
+          winner={winners[2]}
+          containerClassName="results_winner-container-third"
+          imageClassName="results_winner-image-third"
+          image="https://bandodequadrados.com/img/imagem_noticia/983bbd0e58b56e74b3de67a851b53d70.jpg"
+        />
       </div>
 
       <Button onClick={handleGoToRanking}>
