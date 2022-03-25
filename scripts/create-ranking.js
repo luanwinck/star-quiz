@@ -9,6 +9,7 @@ const pontuations = [
     name: 'Léo',
     user: 'leonardo.marcos',
     pontuation: 31,
+    timesWon: 2,
   },
   {
     name: 'Luan',
@@ -19,6 +20,7 @@ const pontuations = [
     name: 'André',
     user: 'andre.dorneles',
     pontuation: 27,
+    timesWon: 1,
   },
   {
     name: 'Bruno',
@@ -65,13 +67,17 @@ const pontuations = [
 async function createRanking() {
   const quizRef = collection(firebaseDb, QUIZ_COLLECTION_NAME);
 
-  const pontuationWithPrev = pontuations.map(pont => ({ ...pont, prevPontuation: 0 }))
+  const mappedPontuations = pontuations.map(pont => ({
+    ...pont,
+    prevPontuation: pont.pontuation,
+    timesWon: pont.timesWon || 0,
+  }))
 
-  console.log(pontuations)
+  console.log(mappedPontuations)
 
   await setDoc(doc(quizRef, RANKING_DOC_TEST), 
     {
-      pontuations: pontuationWithPrev,
+      pontuations: mappedPontuations,
     }
   );
 

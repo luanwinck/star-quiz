@@ -15,13 +15,36 @@
 
 .ranking_user-container {
   padding: 15px 0;
+  display: flex;
 }
 
 .ranking_user-container-border {
   border-top: 1px solid black;
 }
 
+.ranking_user-text-container {
+  width: 230px;
+}
+
 .ranking_user-text {
   margin-right: 12px;
   font-size: 26px;
+}
+
+.ranking_user-arrow-up {
+  margin-right: 12px;
+  color: green;
+}
+
+.ranking_user-arrow-down {
+  margin-right: 12px;
+  color: rgb(179, 0, 0);
+}
+
+.ranking_user-medal {
+  margin-left: 30px;
+}
+
+.ranking_user-trophy-container {
+  margin-left: 30px;
 }

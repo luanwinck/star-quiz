@@ -7,22 +7,61 @@ import './ranking.css'
 const GOLD_MEDAL = '🥇'
 const SILVER_MEDAL = '🥈'
 const BRONZE_MEDAL = '🥉'
+const TROPHY = '🏆'
+const ARROW_UP = '⬆'
+const ARROW_DOWN = '⬇'
+
 
 const MEDALS = [GOLD_MEDAL, SILVER_MEDAL, BRONZE_MEDAL]
 
-function UserPontuation({ name, user, pontuation, prevPontuation, index }) {
-  const pontuationLabel = prevPontuation
-    ? `${pontuation} (+${pontuation - prevPontuation})`
+function UserPontuation({
+  name,
+  user,
+  pontuation,
+  prevPontuation,
+  timesWon,
+  hasBeenGoneUp,
+  hasBeenGoneDown,
+  index
+}) {
+  const diffPontuation = pontuation - prevPontuation
+  const pontuationLabel = prevPontuation && diffPontuation
+    ? `${pontuation} (+${diffPontuation})`
     : pontuation
   const hasMedal = !!MEDALS[index]
   const position = index + 1
 
+  function renderPositionIcon() {
+    if (hasBeenGoneUp) {
+      return <span className="ranking_user-arrow-up">{ARROW_UP}</span>
+    }
+
+    if (hasBeenGoneDown) {
+      return <span className="ranking_user-arrow-down">{ARROW_DOWN}</span>
+    }
+
+    return <span className="ranking_user-text">-</span>
+  }
+
   return (
     <div className={`ranking_user-container ${index > 0 && 'ranking_user-container-border'}`}>
-      <span className="ranking_user-text">{position}-</span>
-      <span className="ranking_user-text">{name || user}</span>
-      <span className="ranking_user-text">{pontuationLabel}</span>
-      {hasMedal && <span className="ranking_user-text">{MEDALS[index]}</span>}
+      <div className="ranking_user-text-container">
+        <span className="ranking_user-text">{position}-</span>
+        <span className="ranking_user-text">{name || user}</span>
+        <span className="ranking_user-text">{pontuationLabel}</span>
+      </div>
+
+      {renderPositionIcon()}
+
+      {hasMedal && <span className="ranking_user-medal">{MEDALS[index]}</span>}
+
+      {!!timesWon && (
+        <div className="ranking_user-trophy-container">
+          {Array.from({ length: timesWon }).map(() => (
+            <span className="ranking_user-trophy">{TROPHY}</span>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

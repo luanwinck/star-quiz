@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { firebaseDb } from "../../App";
 import { QUIZ_COLLECTION_NAME, RANKING_DOC_NAME } from '../../constants';
 import { useGlobalQuiz } from "../../context";
+import { getRankingWithChangedPositions, getWinners } from '../../core';
 
 function getUpdatedAnswers(currentAnswers, newAnswer) {
   const hasAlreadyAnswered = currentAnswers.some((answer) => answer.questionIndex === newAnswer.questionIndex)
@@ -144,12 +145,15 @@ export function useResult() {
   
     const pontuations = querySnapshot.data()?.pontuations || []
 
-    return pontuations.sort((a, b) => b.pontuation - a.pontuation)
+    return getRankingWithChangedPositions(pontuations)
   }, [])
 
   function handleUpdateRanking(currentPontuation, newPontuations) {
+    const winners = getWinners(newPontuations)
+
     return currentPontuation.map((currentUser) => {
       const user = newPontuations.find(({ user }) => user === currentUser.user)
+      const isWinner = winners.some(({ user }) => user === currentUser.user)
 
       if (!user) return currentUser
 
@@ -157,6 +161,7 @@ export function useResult() {
         ...currentUser,
         prevPontuation: currentUser.pontuation,
         pontuation: user.pontuation ? currentUser.pontuation + user.pontuation : currentUser.pontuation,
+        timesWon: isWinner ? currentUser.timesWon + 1 : currentUser.timesWon,
       }
     })
   }
@@ -177,25 +182,4 @@ export function useResult() {
     getRanking,
     updateRanking,
   }
-}
-
-async function createQuestions() {
-  const questions = [
-    {
-      question: 'Qual foi a primeira faculdade que fiz?',
-      answers: ["Eng. Eletrica", "Eng. Eletronica", "Eng. da computação", "Sistemas da Informação"],
-      answerIndex: 1
-    },
-    {
-      question: '- Quantas vezes bati de carro?',
-      answers: ["1", "2", "3", "4"],
-      answerIndex: 2
-    },
-  ]
-
-  const quizRef = doc(firebaseDb, QUIZ_COLLECTION_NAME, "1");
-
-  await updateDoc(quizRef, {
-    questions
-  });
 }
