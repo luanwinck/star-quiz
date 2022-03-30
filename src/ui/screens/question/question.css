@@ -5,11 +5,11 @@
   align-items: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  position: relative;
 }
 
 .question_header {
   width: 80%;
-  /* height: 200px; */
   border-radius: 20px;
   border: 6px solid #F6BD00;
   background-color: white;
@@ -17,7 +17,6 @@
   margin-top: 30px;
   margin-bottom: 60px;
   padding: 40px;
-  /* Responsive font */
 }
 
 .question_options-container {
@@ -25,9 +24,6 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-
-  /* usar grid aqui? */
-  /* deixar dinamico de acordo com o conteúdo */
 }
 
 .question_option-button {
@@ -80,4 +76,16 @@
   right: 80px;
   bottom: 60px;
   font-size: 40px;
+}
+
+@media only screen and (max-width: 1000px) {
+  .question_header {
+    max-width: 80%;
+    padding: 20px;
+  }
+
+  .question_option-button {
+    margin: 10px auto;
+    width: calc(100% - 30px);
+  }
 }
