@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGlobalQuiz, useGlobalUser } from '../../../context';
 import { QuizStatusEnum } from '../../../enum';
 import { useQuiz, useResult } from '../../../services'
+import users from '../../../users';
 import { Button } from '../../components';
 
 import './question.css'
@@ -34,8 +35,11 @@ export function QuestionScreen() {
     changeCurrentQuestionIndex,
     showQuestionResult,
     changeStatus,
+    onSnapshotUserAnswers,
   } = useQuiz()
   const { updateRanking } = useResult()
+
+  const [answersCount, setAnswerCount] = useState(0)
 
   const navigate = useNavigate()
 
@@ -43,6 +47,14 @@ export function QuestionScreen() {
 
   useEffect(() => {
     setSelectedOption(null)
+  }, [questionIndex])
+
+  useEffect(() => {
+    return onSnapshotUserAnswers(setAnswerCount)
+  }, [onSnapshotUserAnswers])
+
+  useEffect(() => {
+    setAnswerCount(0)
   }, [questionIndex])
 
   async function handleUpdateAnswerList(answerIndex) {
@@ -128,6 +140,10 @@ export function QuestionScreen() {
           </Button>
         </div>
       )}
+
+      <span className="question_answers-count-container">
+        {answersCount} / {users.length}
+      </span>
     </div>
   )
 }

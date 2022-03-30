@@ -74,3 +74,10 @@
 .question_action-button {
   margin: auto 12px;
 }
+
+.question_answers-count-container {
+  position: absolute;
+  right: 80px;
+  bottom: 60px;
+  font-size: 40px;
+}

@@ -1,4 +1,4 @@
-import { doc, getDoc, getDocs, setDoc, updateDoc, collection, query } from 'firebase/firestore';
+import { doc, getDoc, getDocs, setDoc, updateDoc, collection, query, onSnapshot } from 'firebase/firestore';
 import { useCallback } from "react";
 import { firebaseDb } from "../../App";
 import { QUIZ_COLLECTION_NAME, RANKING_DOC_NAME } from '../../constants';
@@ -84,11 +84,34 @@ export function useQuiz() {
     }
   }, [])
 
+  const onSnapshotUserAnswers = useCallback((setAnswerCount) => {
+    const unsubscribe = onSnapshot(query(collection(firebaseDb, QUIZ_COLLECTION_NAME, quizNumber, "userAnswers")), (userAnswers) => {
+      const allDocs = userAnswers.docs
+
+      const count = allDocs.reduce((acc, cur) => {
+        const data = cur.data()
+
+        const hasBeenAnswered = data?.answers?.some((answer) => answer.questionIndex === questionIndex)
+
+        if (hasBeenAnswered) return acc + 1
+
+        return acc
+      }, 0)
+
+      if (count > 0) {
+        setAnswerCount(count)
+      }
+    });
+
+    return unsubscribe
+  }, [quizNumber, questionIndex])
+
   return {
     updateUserAnswers,
     changeCurrentQuestionIndex,
     showQuestionResult,
     changeStatus,
+    onSnapshotUserAnswers,
   }
 }
 
