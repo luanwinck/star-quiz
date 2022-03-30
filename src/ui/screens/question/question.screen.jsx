@@ -107,7 +107,7 @@ export function QuestionScreen() {
               ${getOptionButtonClassName(index, selectedOption, answerIndex, hasBeenShownResult)}
             `} // TODO: pegar a opção selecionado caso o host volte na pergunta anterior
             onClick={() => handleUpdateAnswerList(index)}
-            disabled={hasBeenShownResult}
+            disabled={hasBeenShownResult || user.isHost}
 
           >
             {option}
