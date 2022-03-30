@@ -85,7 +85,7 @@ export function RankingScreen() {
   return (
     <div className="ranking">
       <div className="ranking_container">
-        <h1>Ranking</h1>
+        <h1 className="ranking_title">Ranking</h1>
 
         {users.map((user, index) => (
           <UserPontuation

@@ -23,7 +23,7 @@
 }
 
 .ranking_user-text-container {
-  width: 230px;
+  width: 270px;
 }
 
 .ranking_user-text {
@@ -47,4 +47,32 @@
 
 .ranking_user-trophy-container {
   margin-left: 30px;
+}
+
+@media only screen and (max-width: 750px) {
+  .ranking_container {
+    margin: 0 20px;
+    padding: 16px 24px;
+  }
+
+  .ranking_title {
+    font-size: 20px;
+  }
+
+  .ranking_user-text-container {
+    width: 160px;
+  }
+
+  .ranking_user-text {
+    margin-right: 12px;
+    font-size: 14px;
+  }
+
+  .ranking_user-medal {
+    margin-left: 10px;
+  }
+  
+  .ranking_user-trophy-container {
+    margin-left: 10px;
+  }
 }
