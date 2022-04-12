@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { STAR_WARS_LOGO } from '../../../assets/images';
 import { useGlobalUser } from '../../../context';
 import { QuizStatusEnum } from '../../../enum';
-import { useQuiz } from '../../../services';
+import { useQuiz } from '../../../hooks';
 import USERS from '../../../users'
 
 import './initial.css'

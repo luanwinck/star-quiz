@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalQuiz, useGlobalUser } from '../../../context';
 import { QuizStatusEnum } from '../../../enum';
-import { useQuiz, useResult } from '../../../services'
+import { useQuiz, useResult } from '../../../hooks'
 import users from '../../../users';
 import { Button } from '../../components';
 

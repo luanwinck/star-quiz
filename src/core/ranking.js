@@ -20,3 +20,17 @@ export function getWinners(users) {
   
   return users.filter((user) => user.pontuation === firstPosition.pontuation)
 }
+
+export function getUpdatedAnswers(currentAnswers, newAnswer) {
+  const hasAlreadyAnswered = currentAnswers.some((answer) => answer.questionIndex === newAnswer.questionIndex)
+
+  if (!hasAlreadyAnswered) return [...currentAnswers, newAnswer]
+
+  return currentAnswers.map((answer) => {
+    if (answer.questionIndex === newAnswer.questionIndex) {
+      return newAnswer
+    }
+
+    return answer
+  })
+}

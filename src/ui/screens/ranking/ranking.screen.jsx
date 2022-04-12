@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useResult } from '../../../services'
+import { useResult } from '../../../hooks'
 import { Loader } from '../../components'
 
 import './ranking.css'
@@ -90,7 +90,7 @@ export function RankingScreen() {
         {users.map((user, index) => (
           <UserPontuation
             {...user}
-            key={user.user}
+            key={user.name}
             index={index}
           />
         ))}

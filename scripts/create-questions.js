@@ -11,6 +11,11 @@ const questions = [ // TODO: criar função pra pegar o answerIndex
     answerIndex: 1
   },
   {
+    question: 'Onde eu morei a maior parte da minha vida?',
+    answers: ["Taquara", "Parobé", "Igrejinha", "Sapiranga"],
+    answerIndex: 0
+  },
+  {
     question: 'Qual foi a primeira faculdade que fiz?',
     answers: ["Eng. Eletrica", "Eng. Eletronica", "Eng. da computação", "Sistemas da Informação"],
     answerIndex: 1
@@ -59,11 +64,6 @@ const questions = [ // TODO: criar função pra pegar o answerIndex
     question: 'Qual foi o primeiro cliente que trabalhei na CWI?',
     answers: ["Unimed", "GPA", "Arezzo", "Renner"],
     answerIndex: 2
-  },
-  {
-    question: 'Já viajei para o exterior.',
-    answers: ["Verdadeiro", "Falso"],
-    answerIndex: 1
   },
 ]
 
