@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, updateDoc, collection, query, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, collection, query, onSnapshot, orderBy, limit, getDocs } from 'firebase/firestore';
 import { useCallback } from "react";
 import { firebaseDb } from "../App";
 import { QUIZ_COLLECTION_NAME } from '../constants';
@@ -90,11 +90,40 @@ export function useQuiz() {
     return unsubscribe
   }, [quizNumber, questionIndex])
 
+  const getLastQuiz = useCallback(async () => {
+    const q = query(collection(firebaseDb, QUIZ_COLLECTION_NAME), orderBy("quizNumber", "desc"), limit(1));
+
+    const querySnapshot = await getDocs(q);
+
+    const [lastDoc] = querySnapshot.docs
+
+    return lastDoc?.data()
+  }, [])
+
+  const createNewQuiz = useCallback(async (questions) => {
+    const quizRef = collection(firebaseDb, QUIZ_COLLECTION_NAME);
+
+    const lastQuiz = await getLastQuiz();
+
+    const newQuizNumber = lastQuiz.quizNumber + 1;
+
+    await setDoc(doc(quizRef, String(newQuizNumber)), 
+      {
+        currentQuestionIndex: 0,
+        questions,
+        status: 'NOT_STARTED',
+        quizNumber: newQuizNumber,
+      }
+    );
+  }, [])
+
   return {
     updateUserAnswers,
     changeCurrentQuestionIndex,
     showQuestionResult,
     changeStatus,
     onSnapshotUserAnswers,
+    getLastQuiz,
+    createNewQuiz,
   }
 }

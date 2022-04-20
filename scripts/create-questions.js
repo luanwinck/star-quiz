@@ -4,7 +4,7 @@ const { updateDoc, doc, collection, setDoc } = require("firebase/firestore");
 const QUIZ_COLLECTION_NAME = 'quiz'
 const QUIZ_DOC_TEST = '1'
 
-const questions = [ // TODO: criar função pra pegar o answerIndex
+const questions = [
   {
     question: 'Em que mês faço aniversário?',
     answers: ["Agosto", "Setembro", "Outubro", "Novembro"],

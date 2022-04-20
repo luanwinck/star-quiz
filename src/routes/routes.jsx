@@ -1,6 +1,6 @@
-import { Route, Routes, useNavigate } from 'react-router-dom'
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
-import { InitialScreen, QuestionScreen, RankingScreen, ResultsScreen } from '../ui/screens'
+import { CreateQuizScreen, InitialScreen, QuestionScreen, RankingScreen, ResultsScreen } from '../ui/screens'
 import { useGlobalQuiz, useGlobalUser } from '../context'
 import { QuizStatusEnum } from '../enum'
 import { Loader } from '../ui/components'
@@ -11,12 +11,19 @@ const redirectPaths = {
   [QuizStatusEnum.FINISHED]: '/results',
 }
 
+const publicPaths = ['/create-quiz']
+
 export function AppRoutes() {
   const [quiz] = useGlobalQuiz()
   const [{ user }] = useGlobalUser()
   const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
+    if (publicPaths.includes(location.pathname)) {
+      return
+    }
+
     if (!user && !quiz.status) {
       navigate('/')
       return
@@ -39,6 +46,7 @@ export function AppRoutes() {
       <Route path="/questions" element={<QuestionScreen />} />
       <Route path="/results" element={<ResultsScreen />} />
       <Route path="/ranking" element={<RankingScreen />} />
+      <Route path="/create-quiz" element={<CreateQuizScreen />} />
       <Route path="/*" element={<Loader />} />
     </Routes>
   )

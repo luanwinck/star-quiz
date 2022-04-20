@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { STAR_WARS_LOGO } from '../../../assets/images';
-import { useGlobalUser } from '../../../context';
+import { useGlobalQuiz, useGlobalUser } from '../../../context';
 import { QuizStatusEnum } from '../../../enum';
 import { useQuiz } from '../../../hooks';
 import USERS from '../../../users'
@@ -10,6 +10,7 @@ import './initial.css'
 export function InitialScreen() {
   const navigate = useNavigate()
   const [user, setUser] = useGlobalUser()
+  const [{ quizNumber }] = useGlobalQuiz()
   const { changeStatus } = useQuiz()
 
   function handleGoToQuestions() {
@@ -27,7 +28,7 @@ export function InitialScreen() {
 
   return (
     <div className="initial">
-      <span className="initial_title">Quiz #1</span>
+      <span className="initial_title">Quiz #{quizNumber}</span>
 
       <img src={STAR_WARS_LOGO} className="initial_star-wars-logo" />
 
