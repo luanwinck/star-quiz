@@ -5,6 +5,7 @@ import { getFirestore, doc, onSnapshot } from 'firebase/firestore';
 import { useEffect } from 'react';
 import { useGlobalQuiz } from './context';
 import { QUIZ_COLLECTION_NAME } from './constants';
+import { useQuiz } from './hooks';
 
 const firebaseConfig = {
   apiKey: "AIzaSyB6vQS34WztK7_Jvn6p0GnDznhhzJBQ9gw",
@@ -24,22 +25,28 @@ initializeFirebaseApp()
 export const firebaseDb = getFirestore();
 
 function App() {
-  const [{ quizNumber }, setGlobalQuiz] = useGlobalQuiz()
+  const [, setGlobalQuiz] = useGlobalQuiz()
+  const { getLastQuiz } = useQuiz()
 
   useEffect(() => {
-    // TODO: get quiz number
+    async function handleStartQuiz() {
+      const { quizNumber } = await getLastQuiz()
 
-    const unsub = onSnapshot(doc(firebaseDb, QUIZ_COLLECTION_NAME, quizNumber), (doc) => {
-        const { questions, currentQuestionIndex, status } = doc.data()
-
-        setGlobalQuiz({
-          questions,
-          questionIndex: currentQuestionIndex,
-          status,
-        })
-    });
-
-    return unsub
+      const unsub = onSnapshot(doc(firebaseDb, QUIZ_COLLECTION_NAME, String(quizNumber)), (doc) => {
+          const { questions, currentQuestionIndex, status } = doc.data()
+  
+          setGlobalQuiz({
+            questions,
+            questionIndex: currentQuestionIndex,
+            status,
+            quizNumber: String(quizNumber),
+          })
+      });
+  
+      return unsub
+    }
+    
+    handleStartQuiz()
   }, [])
 
   return (

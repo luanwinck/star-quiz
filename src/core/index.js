@@ -1,1 +1,1 @@
-export { getRankingWithChangedPositions, getWinners } from './ranking'
+export { getRankingWithChangedPositions, getWinners, getUpdatedAnswers } from './ranking'

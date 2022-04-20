@@ -4,11 +4,16 @@ const { updateDoc, doc, collection, setDoc } = require("firebase/firestore");
 const QUIZ_COLLECTION_NAME = 'quiz'
 const QUIZ_DOC_TEST = '1'
 
-const questions = [ // TODO: criar função pra pegar o answerIndex
+const questions = [
   {
     question: 'Em que mês faço aniversário?',
     answers: ["Agosto", "Setembro", "Outubro", "Novembro"],
     answerIndex: 1
+  },
+  {
+    question: 'Onde eu morei a maior parte da minha vida?',
+    answers: ["Taquara", "Parobé", "Igrejinha", "Sapiranga"],
+    answerIndex: 0
   },
   {
     question: 'Qual foi a primeira faculdade que fiz?',
@@ -59,11 +64,6 @@ const questions = [ // TODO: criar função pra pegar o answerIndex
     question: 'Qual foi o primeiro cliente que trabalhei na CWI?',
     answers: ["Unimed", "GPA", "Arezzo", "Renner"],
     answerIndex: 2
-  },
-  {
-    question: 'Já viajei para o exterior.',
-    answers: ["Verdadeiro", "Falso"],
-    answerIndex: 1
   },
 ]
 

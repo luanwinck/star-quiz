@@ -1,0 +1,20 @@
+.create-quiz {
+  height: 100vh;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.create-quiz span {
+  margin-bottom: 80px;
+}
+
+.create-quiz label {
+  margin-bottom: 20px;
+}
+
+.create-quiz a {
+  color: white;
+  margin-top: 30px;
+}

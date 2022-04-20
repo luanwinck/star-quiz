@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useGlobalQuiz } from '../../../context'
-import { useResult } from '../../../services'
+import { useResult } from '../../../hooks'
 import { Button } from '../../components'
 
 import './results.css'
