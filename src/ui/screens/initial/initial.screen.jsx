@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { STAR_WARS_LOGO } from '../../../assets/images';
 import { useGlobalQuiz, useGlobalUser } from '../../../context';
@@ -26,6 +27,10 @@ export function InitialScreen() {
     })
   }
 
+  useEffect(() => {
+    setUser({})
+  }, [])
+
   return (
     <div className="initial">
       <span className="initial_title">Quiz #{quizNumber}</span>
@@ -44,6 +49,8 @@ export function InitialScreen() {
           ))}
         </select>
       )}
+
+      {!!user?.user && <span className="initial_wait-message">Aguarde o host iniciar o quiz</span>}
     </div>
   )
 }

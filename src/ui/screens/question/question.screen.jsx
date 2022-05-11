@@ -8,6 +8,8 @@ import { Button } from '../../components';
 
 import './question.css'
 
+const USERS_PLAYING_QUANTITY = users.length - 1
+
 function getOptionButtonClassName(index, selectedOption, answerIndex, hasBeenShownResult) {
   if (!hasBeenShownResult) return ''
 
@@ -142,7 +144,7 @@ export function QuestionScreen() {
       )}
 
       <span className="question_answers-count-container">
-        {answersCount} / {users.length}
+        {answersCount} / {USERS_PLAYING_QUANTITY}
       </span>
     </div>
   )
