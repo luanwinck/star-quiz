@@ -19,7 +19,7 @@ export function useQuiz() {
       answers: getUpdatedAnswers(currentAnswers, newAnswer),
       name: user.name ?? user.user,
     })
-  }, [])
+  }, [quizNumber])
 
   const changeCurrentQuestionIndex = useCallback(async (newQuestionIndex) => {
     try {
@@ -31,7 +31,7 @@ export function useQuiz() {
     } catch (error) {
       console.log(error)
     }
-  }, [])
+  }, [quizNumber])
 
   const showQuestionResult = useCallback(async () => {
     try {
@@ -54,7 +54,7 @@ export function useQuiz() {
     } catch (error) {
       console.log(error)
     }
-  }, [questions])
+  }, [questions, quizNumber])
 
   const changeStatus = useCallback(async (status) => {
     try {
@@ -66,7 +66,7 @@ export function useQuiz() {
     } catch (error) {
       console.log(error)
     }
-  }, [])
+  }, [quizNumber])
 
   const onSnapshotUserAnswers = useCallback((setAnswerCount) => {
     const unsubscribe = onSnapshot(query(collection(firebaseDb, QUIZ_COLLECTION_NAME, quizNumber, "userAnswers")), (userAnswers) => {
