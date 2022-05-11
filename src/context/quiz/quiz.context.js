@@ -5,6 +5,7 @@ const initialState = {
   quizNumber: '1',
   questions: [],
   questionIndex: 0,
+  host: {},
 }
 
 const [_useGlobalQuiz, QuizGlobalProvider] = createGlobalState(initialState)

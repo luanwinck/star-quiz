@@ -100,7 +100,7 @@ export function useQuiz() {
     return lastDoc?.data()
   }, [])
 
-  const createNewQuiz = useCallback(async (questions) => {
+  const createNewQuiz = useCallback(async (questions, host, code) => {
     const quizRef = collection(firebaseDb, QUIZ_COLLECTION_NAME);
 
     const lastQuiz = await getLastQuiz();
@@ -113,6 +113,8 @@ export function useQuiz() {
         questions,
         status: 'NOT_STARTED',
         quizNumber: newQuizNumber,
+        host,
+        code,
       }
     );
   }, [])

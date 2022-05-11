@@ -33,13 +33,17 @@ function App() {
       const { quizNumber } = await getLastQuiz()
 
       const unsub = onSnapshot(doc(firebaseDb, QUIZ_COLLECTION_NAME, String(quizNumber)), (doc) => {
-          const { questions, currentQuestionIndex, status } = doc.data()
+          const { questions, currentQuestionIndex, status, host, code } = doc.data()
   
           setGlobalQuiz({
             questions,
             questionIndex: currentQuestionIndex,
             status,
             quizNumber: String(quizNumber),
+            host: {
+              user: host,
+              code,
+            }
           })
       });
   

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { STAR_WARS_LOGO } from '../../../assets/images';
 import { useGlobalQuiz, useGlobalUser } from '../../../context';
@@ -11,8 +11,9 @@ import './initial.css'
 export function InitialScreen() {
   const navigate = useNavigate()
   const [user, setUser] = useGlobalUser()
-  const [{ quizNumber }] = useGlobalQuiz()
+  const [{ quizNumber, host }] = useGlobalQuiz()
   const { changeStatus } = useQuiz()
+  const [code, setCode] = useState('')
 
   function handleGoToQuestions() {
     navigate('/questions')
@@ -27,9 +28,17 @@ export function InitialScreen() {
     })
   }
 
+  function handleCodeChange(e) {
+    setCode(e.target.value)
+  }
+
   useEffect(() => {
     setUser({})
   }, [])
+
+  const hasSelectedUser = !!user?.user
+  const isHost = hasSelectedUser && host?.user === user?.user
+  const isHostAuthenticated = code === host?.code
 
   return (
     <div className="initial">
@@ -37,7 +46,7 @@ export function InitialScreen() {
 
       <img src={STAR_WARS_LOGO} className="initial_star-wars-logo" />
 
-      {user.isHost ? (
+      {isHostAuthenticated ? (
         <button className="initial_start-button" onClick={handleGoToQuestions}>
           Iniciar
         </button>
@@ -50,7 +59,19 @@ export function InitialScreen() {
         </select>
       )}
 
-      {!!user?.user && <span className="initial_wait-message">Aguarde o host iniciar o quiz</span>}
+      {isHost && !isHostAuthenticated && (
+        <input
+          placeholder="Código de acesso"
+          value={code}
+          type="password"
+          onChange={handleCodeChange}
+          className="initial_input"
+        />
+      )}
+
+      {hasSelectedUser && !isHost && (
+        <span className="initial_wait-message">Aguarde o host iniciar o quiz</span>
+      )}
     </div>
   )
 }
